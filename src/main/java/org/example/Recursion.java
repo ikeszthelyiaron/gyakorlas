@@ -51,6 +51,11 @@ public class Recursion {
                 .filter(m -> !converted.stream().anyMatch(a -> matrixEquals(a, m)))
                 .toList();
         System.out.println("diff size: " + diff.size());
+        System.out.println("solutions not included in my implementation:");
+        for (int i = 0; i < diff.size(); i++) {
+            printBooleanGrid(diff.get(i));
+            System.out.println("-----------------------------------------------");
+        }
     }
 
     static boolean[][] generateBooleanMatrixFromIntArray(Integer[] intArray) {
@@ -117,32 +122,36 @@ public class Recursion {
 
     static Set<boolean[][]> buildTowersAllSolutions(Set<boolean[][]> result, boolean[][] currentBuilds, int row, int column) {
         int gridSize = currentBuilds.length;
-        if(row == 0 || row == gridSize - 1) {
-            currentBuilds = new boolean[gridSize][gridSize];
+        if (row == 0 || row == gridSize - 1) {
+//            currentBuilds = new boolean[gridSize][gridSize];
         }
         if (row == gridSize) {
             boolean[][] clone = currentBuilds.clone();
-            if(!result.stream().anyMatch(m -> matrixEquals(m, clone)) ) {
-                result.add(clone);
-            }
-//            currentBuilds = new boolean[gridSize][gridSize];
+            result.add(clone);
+            currentBuilds = new boolean[gridSize][gridSize];
             return result;
         }
 
+        boolean foundPlaceForTower = false;
         for (int i = 0; i < gridSize; i++) {
             if (row == 0 || i == 0) {
 //                currentBuilds = new boolean[gridSize][gridSize];
             }
             if (canBuild(currentBuilds, row, i)) {
+                foundPlaceForTower = true;
                 currentBuilds[row][i] = true;
                 result = buildTowersAllSolutions(result, currentBuilds, row + 1, 0);
-                if (row == gridSize - 1 || i == gridSize - 1) {
-//                    currentBuilds = new boolean[gridSize][gridSize];
-                }
+//                if(i != gridSize - 1) {
+                    currentBuilds[row][i] = false;
+                    //?: a valid megoldások megtalálása után miért és hogyan üti ki a true értéket a resultSetben?
+//                }
             }
-            if (row == gridSize - 1 || i == gridSize - 1) {
-                currentBuilds = new boolean[gridSize][gridSize];
+            if (row == gridSize - 1) {
+//                currentBuilds = new boolean[gridSize][gridSize];
             }
+        }
+        if (!foundPlaceForTower) {
+//            currentBuilds = new boolean[gridSize][gridSize];
         }
 
         return result;
@@ -151,7 +160,7 @@ public class Recursion {
     static boolean matrixEquals(boolean[][] one, boolean[][] other) {
         for (int i = 0; i < one.length; i++) {
             for (int j = 0; j < one[0].length; j++) {
-                if(!one[i][j] == other[i][j]) {
+                if (!one[i][j] == other[i][j]) {
                     return false;
                 }
             }
