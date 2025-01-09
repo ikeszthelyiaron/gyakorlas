@@ -35,11 +35,39 @@ public class Recursion {
 //        System.out.println(determineBiggestSpotSize(grid));
 //        System.out.println("sizeOfSpot: " + determineSizeOfSpot(grid, 2, 4, 1));
 //        buildTowersOneSolutionInit(5);
-        buildTowersAllSolutionsInit(5);
-        Set<Integer[]> solutionInBook = buildTowers(0, new Integer[GRID_SIZE], new LinkedHashSet<>());
-        bookResultSetStatic = solutionInBook;
-        System.out.println("solutionInBook size: " + solutionInBook.size());
-        findDiffBetweenSets(myResultSetStatic, bookResultSetStatic);
+//        buildTowersAllSolutionsInit(5);
+//        Set<Integer[]> solutionInBook = buildTowers(0, new Integer[GRID_SIZE], new LinkedHashSet<>());
+//        bookResultSetStatic = solutionInBook;
+//        System.out.println("solutionInBook size: " + solutionInBook.size());
+//        findDiffBetweenSets(myResultSetStatic, bookResultSetStatic);
+        int[]input = initializeArray();
+        System.out.println(findMagicIndex(input, 0, input.length / 2));
+
+
+    }
+
+    static int findMagicIndex(int[] input, int index, int target) {
+        if(input.length == 0) {
+            return -1;
+        }
+
+        int halfIndex = input.length / 2;
+        int[] firstHalf = Arrays.copyOfRange(input, 0, halfIndex);
+        int[] secondHalf = Arrays.copyOfRange(input, halfIndex, input.length);
+        //azt vizsg h a halfIndex hanyadik elem kéne h legyen az eredeti array-ben
+        if(input[halfIndex] == target) {
+            return target;
+        }
+        findMagicIndex(firstHalf, firstHalf.length / 2, firstHalf.length / 2);
+
+        findMagicIndex(secondHalf, secondHalf.length / 2, target + firstHalf.length);
+
+        return -1;
+    }
+
+    static int[] initializeArray() {
+        int[] result = {1, 2, 3, 4, 4};
+        return result;
     }
 
     static void findDiffBetweenSets(Set<boolean[][]> myResultSet, Set<Integer[]> bookResultSet) {
@@ -122,38 +150,35 @@ public class Recursion {
 
     static Set<boolean[][]> buildTowersAllSolutions(Set<boolean[][]> result, boolean[][] currentBuilds, int row, int column) {
         int gridSize = currentBuilds.length;
-        if (row == 0 || row == gridSize - 1) {
-//            currentBuilds = new boolean[gridSize][gridSize];
-        }
+
         if (row == gridSize) {
-            boolean[][] clone = currentBuilds.clone();
+            boolean[][] clone = cloneBooleanMatrix(currentBuilds);
             result.add(clone);
-            currentBuilds = new boolean[gridSize][gridSize];
             return result;
         }
 
-        boolean foundPlaceForTower = false;
         for (int i = 0; i < gridSize; i++) {
-            if (row == 0 || i == 0) {
-//                currentBuilds = new boolean[gridSize][gridSize];
-            }
             if (canBuild(currentBuilds, row, i)) {
-                foundPlaceForTower = true;
                 currentBuilds[row][i] = true;
                 result = buildTowersAllSolutions(result, currentBuilds, row + 1, 0);
-//                if(i != gridSize - 1) {
-                    currentBuilds[row][i] = false;
-                    //?: a valid megoldások megtalálása után miért és hogyan üti ki a true értéket a resultSetben?
-//                }
+                currentBuilds[row][i] = false;
+                //?: a valid megoldások megtalálása után miért és hogyan üti ki a true értéket a resultSetben?
             }
-            if (row == gridSize - 1) {
-//                currentBuilds = new boolean[gridSize][gridSize];
-            }
-        }
-        if (!foundPlaceForTower) {
-//            currentBuilds = new boolean[gridSize][gridSize];
         }
 
+        return result;
+    }
+
+    private static boolean[][] cloneBooleanMatrix(boolean[][] currentBuilds) {
+        int gridSize = currentBuilds[0].length;
+        boolean[][] result = new boolean[gridSize][gridSize];
+        for (int i = 0; i < currentBuilds.length; i++) {
+            boolean[] row = new boolean[gridSize];
+            for (int j = 0; j < currentBuilds[i].length; j++) {
+                row[j] = currentBuilds[i][j];
+            }
+            result[i] = row;
+        }
         return result;
     }
 
