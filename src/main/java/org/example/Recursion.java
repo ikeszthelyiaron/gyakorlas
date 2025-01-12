@@ -41,31 +41,55 @@ public class Recursion {
 //        System.out.println("solutionInBook size: " + solutionInBook.size());
 //        findDiffBetweenSets(myResultSetStatic, bookResultSetStatic);
         int[]input = initializeArray();
-        System.out.println(findMagicIndex(input, 0, input.length / 2));
-
+        int[] inputCopy = null;
+//        findMagicIndex(input, (input.length / 2) - 1);
+        findMagicIndex(input, (input.length - 1));
+//        printArrayRecursive(input, input.length % 2 == 0 ? (input.length / 2) - 1 : (input.length / 2));
 
     }
 
-    static int findMagicIndex(int[] input, int index, int target) {
-        if(input.length == 0) {
-            return -1;
+    static void printArrayRecursive(int[] currentArray, int target) {
+        int halfIndex = currentArray.length % 2 == 0 ? (currentArray.length / 2) - 1 : (currentArray.length / 2);
+        System.out.println("target: " + target);
+        if(currentArray.length == 1) {
+            System.out.println(currentArray[0]);
+            return;
         }
-
-        int halfIndex = input.length / 2;
-        int[] firstHalf = Arrays.copyOfRange(input, 0, halfIndex);
-        int[] secondHalf = Arrays.copyOfRange(input, halfIndex, input.length);
-        //azt vizsg h a halfIndex hanyadik elem kéne h legyen az eredeti array-ben
-        if(input[halfIndex] == target) {
-            return target;
+        if(currentArray[halfIndex] == target) {
+            System.out.println("found it: " + currentArray[halfIndex]);
         }
-        findMagicIndex(firstHalf, firstHalf.length / 2, firstHalf.length / 2);
+        int[] firstHalf = Arrays.copyOfRange(currentArray, 0, halfIndex + 1);
+        int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
+        printArrayRecursive(firstHalf, target);
+        printArrayRecursive(secondHalf, target);
 
-        findMagicIndex(secondHalf, secondHalf.length / 2, target + firstHalf.length);
+    }
 
-        return -1;
+    static boolean findMagicIndex(int[] currentArray, int target) {
+        int halfIndex = currentArray.length % 2 == 0 ? (currentArray.length / 2) - 1 : (currentArray.length / 2);
+        if (currentArray.length == 0 || (currentArray.length == 1 && currentArray[halfIndex] != target - 1)) {     //első fele tuti kell?
+            return false;
+        }
+        int[] firstHalf = Arrays.copyOfRange(currentArray, 0, halfIndex + 1);
+        int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
+        int initialTargetAdjustment = currentArray.length % 2 == 0 ? (currentArray.length / 2) : (currentArray.length / 2 + 1);
+        target -= initialTargetAdjustment;
+        if(initialTargetAdjustment == 0) {
+            target -= 1;
+        }
+        if (currentArray[halfIndex] == target) {
+            System.out.printf("found it! input[%d] = %d", halfIndex, target);
+            return true;
+        } else {
+            int targetAdjustment = 2 * (secondHalf.length % 2 == 0 ? (secondHalf.length / 2) : (secondHalf.length / 2 + 1)); //a szorzó a target -= sor miatt kell
+                return
+                        findMagicIndex(secondHalf, target + targetAdjustment) ||
+                        findMagicIndex(firstHalf, target);
+        }
     }
 
     static int[] initializeArray() {
+        //pr: uts elem, {1, 2, 3, 4, 5, 6, 7}; {1, 2, 3, 4, 5, 6}; & hosszabbak
         int[] result = {1, 2, 3, 4, 4};
         return result;
     }
