@@ -43,25 +43,25 @@ public class Recursion {
         int[]input = initializeArray();
         int[] inputCopy = null;
 //        findMagicIndex(input, (input.length / 2) - 1);
-        findMagicIndex(input, (input.length - 1));
+        findMagicIndex(input, (input.length % 2 == 0 ? (input.length - 1) : (input.length - 1)));      //ha páros hossz: target: (input.length - 1) ha npár: input.length
 //        printArrayRecursive(input, input.length % 2 == 0 ? (input.length / 2) - 1 : (input.length / 2));
 
     }
 
     static void printArrayRecursive(int[] currentArray, int target) {
         int halfIndex = currentArray.length % 2 == 0 ? (currentArray.length / 2) - 1 : (currentArray.length / 2);
-        System.out.println("target: " + target);
+//        System.out.println("target: " + target);
         if(currentArray.length == 1) {
             System.out.println(currentArray[0]);
             return;
         }
         if(currentArray[halfIndex] == target) {
-            System.out.println("found it: " + currentArray[halfIndex]);
+//            System.out.println("found it: " + currentArray[halfIndex]);
         }
         int[] firstHalf = Arrays.copyOfRange(currentArray, 0, halfIndex + 1);
         int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
-        printArrayRecursive(firstHalf, target);
         printArrayRecursive(secondHalf, target);
+        printArrayRecursive(firstHalf, target);
 
     }
 
@@ -72,7 +72,7 @@ public class Recursion {
         }
         int[] firstHalf = Arrays.copyOfRange(currentArray, 0, halfIndex + 1);
         int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
-        int initialTargetAdjustment = currentArray.length % 2 == 0 ? (currentArray.length / 2) : (currentArray.length / 2 + 1);
+        int initialTargetAdjustment = currentArray.length % 2 == 0 ? (currentArray.length / 2) : (currentArray.length / 2);
         target -= initialTargetAdjustment;
         if(initialTargetAdjustment == 0) {
             target -= 1;
@@ -83,14 +83,15 @@ public class Recursion {
         } else {
             int targetAdjustment = 2 * (secondHalf.length % 2 == 0 ? (secondHalf.length / 2) : (secondHalf.length / 2 + 1)); //a szorzó a target -= sor miatt kell
                 return
-                        findMagicIndex(secondHalf, target + targetAdjustment) ||
-                        findMagicIndex(firstHalf, target);
+                        findMagicIndex(firstHalf, target) ||
+                        findMagicIndex(secondHalf, target + targetAdjustment);
         }
     }
 
     static int[] initializeArray() {
-        //pr: uts elem, {1, 2, 3, 4, 5, 6, 7}; {1, 2, 3, 4, 5, 6}; & hosszabbak
-        int[] result = {1, 2, 3, 4, 4};
+        //pr: {0, 1, 3, 4, 4, 6, 7, 8, 8}; pr: azelőtt találunk megoldást h az elejére érnénk
+        //hiba: {1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 10};
+        int[] result = {1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 10};
         return result;
     }
 
