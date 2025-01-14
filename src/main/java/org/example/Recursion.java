@@ -74,6 +74,7 @@ public class Recursion {
         int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
         int initialTargetAdjustment = currentArray.length % 2 == 0 ? (currentArray.length / 2) : (currentArray.length / 2);
         target -= initialTargetAdjustment;
+        boolean initialTargetAdjustmentIsZero = initialTargetAdjustment == 0;
         if(initialTargetAdjustment == 0) {
             target -= 1;
         }
@@ -81,6 +82,9 @@ public class Recursion {
             System.out.printf("found it! input[%d] = %d", halfIndex, target);
             return true;
         } else {
+            if(initialTargetAdjustmentIsZero) {
+                target += 1;
+            }
             int targetAdjustment = 2 * (secondHalf.length % 2 == 0 ? (secondHalf.length / 2) : (secondHalf.length / 2 + 1)); //a szorzó a target -= sor miatt kell
                 return
                         findMagicIndex(firstHalf, target) ||
