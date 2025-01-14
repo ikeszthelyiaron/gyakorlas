@@ -69,10 +69,6 @@ public class Recursion {
     static boolean findMagicIndex(int[] currentArray, int target, boolean currentArrayIsSecondHalf) {
         int halfIndex = currentArray.length % 2 == 0 ? (currentArray.length / 2) - 1 : (currentArray.length / 2);
 
-        //pr: ha secondHalf-ágon érkezünk, akkor ezt: currentArray[halfIndex] != target - 1   a targetAdjustment után kéne elvégezni
-        if (currentArray.length == 0) {
-            return false;
-        }
         if(!currentArrayIsSecondHalf && (currentArray.length == 1 && currentArray[halfIndex] != target - 1)) {
             return false;
         }
@@ -83,14 +79,12 @@ public class Recursion {
         int[] firstHalf = Arrays.copyOfRange(currentArray, 0, halfIndex + 1);
         int[] secondHalf = Arrays.copyOfRange(currentArray, halfIndex + 1, currentArray.length);
         int targetAdjustment = currentArray.length / 2;
-//        int initialTargetAdjustment = currentArray.length % 2 == 0 ? (currentArray.length / 2) : (currentArray.length / 2);
         target -= targetAdjustment;
 
         if (currentArray[halfIndex] == target) {
             System.out.printf("found it! input[%d] = %d\n", halfIndex, target);
             return true;
         } else {
-//            int targetAdjustment = 2 * (secondHalf.length % 2 == 0 ? (secondHalf.length / 2) : (secondHalf.length / 2)); //a szorzó a target -= sor miatt kell
                 return
                         findMagicIndex(firstHalf, target, false) ||
                         findMagicIndex(secondHalf, target + targetAdjustment, true);
@@ -99,7 +93,6 @@ public class Recursion {
 
     static List<int[]> initializeArrays() {
         //pr: {0, 2, 3, 4, 5, 5, 7, 8, 9, 10, 10}; pr: azelőtt találunk megoldást h az elejére érnénk
-        //hiba: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10};
         List<int[]> result = new ArrayList<>();
         result.add(new int []{0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10});
         result.add(new int []{1, 1, 3, 4, 5, 6, 7, 8, 9, 10, 10});
